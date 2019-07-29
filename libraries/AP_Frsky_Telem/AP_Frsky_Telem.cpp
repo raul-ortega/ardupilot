@@ -123,7 +123,7 @@ void AP_Frsky_Telem::send_SPort_Passthrough(void)
                 send_uint32(DIY_FIRST_ID, _msg_chunk.chunk);
                 return;
             }
-            if ((now - _passthrough.ap_status_timer) >= 500) {
+            if ((now - _passthrough.ap_status_timer) >= 1000) {
                 if (((*_ap.valuep) & AP_INITIALIZED_FLAG) > 0) {  // send ap status only once vehicle has been initialised
                     send_uint32(DIY_FIRST_ID+1, calc_ap_status());
                     _passthrough.ap_status_timer = AP_HAL::millis();
@@ -142,22 +142,22 @@ void AP_Frsky_Telem::send_SPort_Passthrough(void)
                     return;
                 }
             }
-            if ((now - _passthrough.gps_status_timer) >= 1000) {
+            if ((now - _passthrough.gps_status_timer) >= 500) { // 2 hz
                 send_uint32(DIY_FIRST_ID+2, calc_gps_status());
                 _passthrough.gps_status_timer = AP_HAL::millis();
                 return;
             }
-            if ((now - _passthrough.home_timer) >= 500) {
+            if ((now - _passthrough.home_timer) >= 1000) {
                 send_uint32(DIY_FIRST_ID+4, calc_home());
                 _passthrough.home_timer = AP_HAL::millis();
                 return;
             }
-            if ((now - _passthrough.velandyaw_timer) >= 500) {
+            if ((now - _passthrough.velandyaw_timer) >= 1000) {
                 send_uint32(DIY_FIRST_ID+5, calc_velandyaw());
                 _passthrough.velandyaw_timer = AP_HAL::millis();
                 return;
             }
-            if ((now - _passthrough.gps_latlng_timer) >= 1000) {
+            if ((now - _passthrough.gps_latlng_timer) >= 125) { // 4 hz
                 send_uint32(GPS_LONG_LATI_FIRST_ID, calc_gps_latlng(&_passthrough.send_latitude)); // gps latitude or longitude
                 if (!_passthrough.send_latitude) { // we've cycled and sent one each of longitude then latitude, so reset the timer
                     _passthrough.gps_latlng_timer = AP_HAL::millis();
